@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "425013690536",
+    "firebase_url": "https://construction-chat.firebaseio.com",
+    "project_id": "construction-chat",
+    "storage_bucket": "construction-chat.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:425013690536:android:b7ddf0be9135d85c",
+        "android_client_info": {
+          "package_name": "zhenghaozhao.construction_chat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "425013690536-1omn7dhlio3b2a0452ok3i5ah44cuta8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCEAfztsk4M8Qrjb03FYjxCA5noeJxxXRo"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
