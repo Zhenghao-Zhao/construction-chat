@@ -10,6 +10,9 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 
 public class P2PChatPage extends AppCompatActivity{
 
@@ -17,6 +20,8 @@ public class P2PChatPage extends AppCompatActivity{
     private ListView messageView;
     private MessageAdapter messageAdapter;
     private boolean isMyMessage;
+    private CollectionReference messageDataRef;
+    private FirebaseFirestore db;
     private static UserData receiverData;
 
 
@@ -33,6 +38,8 @@ public class P2PChatPage extends AppCompatActivity{
         messageAdapter = new MessageAdapter(this);
         messageView.setAdapter(messageAdapter);
         isMyMessage = false;
+        db = FirebaseFirestore.getInstance();
+        messageDataRef = db.collection("messageData_Test");
 
     }
 
@@ -48,6 +55,7 @@ public class P2PChatPage extends AppCompatActivity{
                     @Override
                     public void run() {
                         final Message message = new Message(text, isMyMessage, receiverData);
+                        messageDataRef.add(message);
                         messageAdapter.add(message);
                         // scroll the ListView to the last added element
                         messageView.setSelection(messageView.getCount() - 1);

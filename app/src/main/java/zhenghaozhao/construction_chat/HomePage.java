@@ -40,6 +40,7 @@ public class HomePage extends AppCompatActivity {
     //asynchronously retrieve all documents
     private FirebaseFirestore db;
     private CollectionReference userDataRef;
+    private CollectionReference groupDataRef;
     private AutoCompleteUserAdapter autoCompleteUserAdapter;
     private DataRepository repository;
     private Fragments fragments;
@@ -51,21 +52,16 @@ public class HomePage extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-         db = FirebaseFirestore.getInstance();
+        db = FirebaseFirestore.getInstance();
         FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
                 .setTimestampsInSnapshotsEnabled(true)
                 .build();
         db.setFirestoreSettings(settings);
 
-         userDataRef = db.collection("UserData_Test");
-         repository = new DataRepository();
-         fragments = new Fragments();
-
-         List<UserData> userDataList = new ArrayList<>();
-         userDataList.add(new UserData("Zhenghao", true, false));
-         userDataList.add(new UserData("Gregg", false, true));
-         GroupData groupData = new GroupData("Group2", userDataList);
-         repository.uploadGroup(groupData);
+        userDataRef = db.collection("UserData_Test");
+        groupDataRef = db.collection("GroupData_Test");
+        repository = new DataRepository();
+        fragments = new Fragments();
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.

@@ -55,7 +55,7 @@ public class MessageAdapter extends BaseAdapter{
         LayoutInflater messageInflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
         Message message = history.get(i);
 
-        if (message.checkIsMyMessage()) { // this message was sent by us so let's create a basic chat bubble on the right
+        if (message.isMyMessage()) { // this message was sent by us so let's create a basic chat bubble on the right
             convertView = messageInflater.inflate(R.layout.my_message, null);
             holder.messageBody = (TextView) convertView.findViewById(R.id.message_body);
             convertView.setTag(holder);

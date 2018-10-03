@@ -12,16 +12,16 @@ public class Message {
         this.data = data;
     }
 
+    public boolean isMyMessage() {
+        return isMyMessage;
+    }
+
     public String getText (){
         return text;
     }
 
     public UserData getData() {
         return data;
-    }
-
-    public boolean checkIsMyMessage (){
-        return isMyMessage;
     }
 
 
