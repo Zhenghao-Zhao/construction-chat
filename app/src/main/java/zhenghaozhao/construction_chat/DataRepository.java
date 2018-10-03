@@ -8,6 +8,7 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -35,30 +36,9 @@ public class DataRepository {
         userDataRef = db.collection("UserData");
     }
 
-    public void saveUsers(UserData userData){
-        final String KEY_NAME = "name";
-        final String KEY_ISONSITE = "isOnSite";
-        final String KEY_ISMANAGER = "isManager";
+    public void uploadUser(UserData userData){
 
-        Map<String, Object> map = new HashMap<>();
-        map.put(KEY_NAME, userData.getName());
-        map.put(KEY_ISMANAGER, userData.isManager());
-        map.put(KEY_ISONSITE, userData.isOnSite());
-
-        db.collection("UserData").document().set(map)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d(TAG, "User data added successfully!");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d(TAG, e.toString());
-                    }
-                });
-
+        db.collection("UserData_Test").add(userData);
     }
 
     public void fetchData(){
@@ -91,6 +71,26 @@ public class DataRepository {
             }else {
                 workerData.add(user);
             }
+        }
+
+    }
+
+    // upload a group data to the database
+    public void uploadGroup(GroupData groupData){
+        List<UserData> groupMembers = groupData.getMembers();
+        DocumentReference document = db.collection("GroupData_Test")
+                .document(groupData.getGroupName());
+
+        CollectionReference collection = document
+                .collection("Group_UserData");
+
+        for (UserData member : groupMembers){
+            collection.add(member).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                @Override
+                public void onSuccess(DocumentReference documentReference) {
+                    Log.d(TAG, "onSuccess: Successful!!!!!!!!!!");
+                }
+            });
         }
 
     }

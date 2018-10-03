@@ -1,5 +1,9 @@
 package zhenghaozhao.construction_chat;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProvider;
+import android.arch.lifecycle.ViewModelProviders;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -12,10 +16,12 @@ import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.widget.AutoCompleteTextView;
 
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -46,10 +52,20 @@ public class HomePage extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
          db = FirebaseFirestore.getInstance();
+        FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
+                .setTimestampsInSnapshotsEnabled(true)
+                .build();
+        db.setFirestoreSettings(settings);
+
          userDataRef = db.collection("UserData_Test");
          repository = new DataRepository();
-
          fragments = new Fragments();
+
+         List<UserData> userDataList = new ArrayList<>();
+         userDataList.add(new UserData("Zhenghao", true, false));
+         userDataList.add(new UserData("Gregg", false, true));
+         GroupData groupData = new GroupData("Group2", userDataList);
+         repository.uploadGroup(groupData);
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
@@ -78,17 +94,15 @@ public class HomePage extends AppCompatActivity {
                 }
                 List<UserData> cloudUserDataList = new ArrayList<>();
                 for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots){
-                    System.out.println("Name is: " + documentSnapshot.getData().get("name"));
                     UserData data = documentSnapshot.toObject(UserData.class);
                     cloudUserDataList.add(data);
                 }
                 repository.addRepoData(cloudUserDataList);
                 autoCompleteUserAdapter.setAll_userData(cloudUserDataList);
-                populateData(repository);
+                fragments.addData(repository);
 
             }
         });
-
     }
 
     private void setUpViewPager(ViewPager viewPager){
@@ -100,13 +114,6 @@ public class HomePage extends AppCompatActivity {
         adapter.addFragment(fragments.getFragment_site(), "SITE");
         viewPager.setAdapter(adapter);
     }
-
-
-    private void populateData(DataRepository repo){
-        fragments.addData(repo);
-    }
-
-
 
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
         private final List<Fragment> fragmentList = new ArrayList<>();
