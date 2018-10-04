@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Map;
 
 public class DataRepository {
-    private static final String TAG = "HomePage";
 
     //asynchronously retrieve all documents
     private FirebaseFirestore db;

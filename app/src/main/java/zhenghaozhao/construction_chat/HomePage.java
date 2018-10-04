@@ -59,11 +59,6 @@ public class HomePage extends AppCompatActivity implements Fragments.Fragment_al
         repository = new DataRepository();
         fragments = new Fragments();
 
-
-        System.out.println("Hi this is called...");
-
-        // Obtain a new or prior instance of HotStockViewModel from the
-        // ViewModelProviders utility class.
         FBViewModel viewModel = ViewModelProviders.of(this).get(FBViewModel.class);
 
         LiveData<QuerySnapshot> liveData = viewModel.getQuerySnapshotLiveData();

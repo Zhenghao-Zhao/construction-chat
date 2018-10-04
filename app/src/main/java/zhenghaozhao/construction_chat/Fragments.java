@@ -141,7 +141,6 @@ public class Fragments {
         public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
             View view = inflater.inflate(R.layout.fragment_worker_contacts, container, false);
             recyclerViewAdapter = new RecyclerViewAdapter(getContext());
-            System.out.println("this is sent...");
             listener.workerSend(recyclerViewAdapter);
             RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view_worker);
             recyclerView.setAdapter(recyclerViewAdapter);
