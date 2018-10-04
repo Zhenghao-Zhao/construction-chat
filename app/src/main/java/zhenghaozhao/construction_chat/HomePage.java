@@ -4,6 +4,7 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -28,7 +29,9 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HomePage extends AppCompatActivity {
+public class HomePage extends AppCompatActivity implements Fragments.Fragment_all.Fragment_allListener
+, Fragments.Fragment_manager.Fragment_managerListener, Fragments.Fragment_worker.Fragment_workerListener
+        , Fragments.Fragment_site.Fragment_siteListener{
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
@@ -38,12 +41,13 @@ public class HomePage extends AppCompatActivity {
     private ViewPager mViewPager;
 
     //asynchronously retrieve all documents
-    private FirebaseFirestore db;
-    private CollectionReference userDataRef;
-    private CollectionReference groupDataRef;
     private AutoCompleteUserAdapter autoCompleteUserAdapter;
     private DataRepository repository;
     private Fragments fragments;
+    private RecyclerViewAdapter allRecycler;
+    private RecyclerViewAdapter managerRecycler;
+    private RecyclerViewAdapter workerRecycler;
+    private RecyclerViewAdapter siteRecycler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,16 +56,36 @@ public class HomePage extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        db = FirebaseFirestore.getInstance();
-        FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
-                .setTimestampsInSnapshotsEnabled(true)
-                .build();
-        db.setFirestoreSettings(settings);
-
-        userDataRef = db.collection("UserData_Test");
-        groupDataRef = db.collection("GroupData_Test");
         repository = new DataRepository();
         fragments = new Fragments();
+
+
+        System.out.println("Hi this is called...");
+
+        // Obtain a new or prior instance of HotStockViewModel from the
+        // ViewModelProviders utility class.
+        FBViewModel viewModel = ViewModelProviders.of(this).get(FBViewModel.class);
+
+        LiveData<QuerySnapshot> liveData = viewModel.getQuerySnapshotLiveData();
+
+        liveData.observe(this, new Observer<QuerySnapshot>() {
+            @Override
+            public void onChanged(QuerySnapshot querySnapshot) {
+                List<UserData> cloudUserDataList = new ArrayList<>();
+                for (QueryDocumentSnapshot documentSnapshot : querySnapshot){
+                    UserData data = documentSnapshot.toObject(UserData.class);
+                    cloudUserDataList.add(data);
+                }
+                repository.addRepoData(cloudUserDataList);
+                autoCompleteUserAdapter.setAll_userData(cloudUserDataList);
+                allRecycler.setContacts(repository.getUserData());
+                managerRecycler.setContacts(repository.getManagerData());
+                if (workerRecycler != null)
+                workerRecycler.setContacts(repository.getWorkerData());
+                if (siteRecycler != null)
+                siteRecycler.setContacts(repository.getSiteData());
+            }
+        });
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
@@ -79,36 +103,33 @@ public class HomePage extends AppCompatActivity {
 
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        userDataRef.addSnapshotListener(this, new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(QuerySnapshot queryDocumentSnapshots, FirebaseFirestoreException e) {
-                if (e != null) {
-                    return;
-                }
-                List<UserData> cloudUserDataList = new ArrayList<>();
-                for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots){
-                    UserData data = documentSnapshot.toObject(UserData.class);
-                    cloudUserDataList.add(data);
-                }
-                repository.addRepoData(cloudUserDataList);
-                autoCompleteUserAdapter.setAll_userData(cloudUserDataList);
-                fragments.addData(repository);
-
-            }
-        });
-    }
-
     private void setUpViewPager(ViewPager viewPager){
         SectionsPagerAdapter adapter = new SectionsPagerAdapter(getSupportFragmentManager());
-
         adapter.addFragment(fragments.getFragment_all(), "ALL");
         adapter.addFragment(fragments.getFragment_manager(), "MANAGER");
         adapter.addFragment(fragments.getFragment_worker(), "WORKER");
         adapter.addFragment(fragments.getFragment_site(), "SITE");
         viewPager.setAdapter(adapter);
+    }
+
+    @Override
+    public void allSend(RecyclerViewAdapter adapter) {
+        allRecycler = adapter;
+    }
+
+    @Override
+    public void managerSend(RecyclerViewAdapter adapter) {
+        managerRecycler = adapter;
+    }
+
+    @Override
+    public void workerSend(RecyclerViewAdapter adapter) {
+        workerRecycler = adapter;
+    }
+
+    @Override
+    public void siteSend(RecyclerViewAdapter adapter) {
+        siteRecycler = adapter;
     }
 
     public class SectionsPagerAdapter extends FragmentPagerAdapter {

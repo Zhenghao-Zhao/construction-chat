@@ -27,10 +27,10 @@ public class DataRepository {
     private CollectionReference groupDataRef;
 
     //data lists
-    private List<UserData> userData  = new ArrayList<>();
-    private List<UserData> managerData = new ArrayList<>();
-    private List<UserData> workerData = new ArrayList<>();
-    private List<UserData> siteData = new ArrayList<>();
+    public static List<UserData> userData  = new ArrayList<>();
+    public static List<UserData> managerData = new ArrayList<>();
+    public static List<UserData> workerData = new ArrayList<>();
+    public static List<UserData> siteData = new ArrayList<>();
 
     DataRepository(){
         db = FirebaseFirestore.getInstance();

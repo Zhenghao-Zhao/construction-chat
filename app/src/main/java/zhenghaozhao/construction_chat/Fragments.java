@@ -32,12 +32,6 @@ public class Fragments {
         fragment_site = new Fragment_site();
     }
 
-    public void addData(DataRepository repo) {
-        fragment_all.setRecyclerViewData(repo.getUserData());
-        fragment_manager.setRecyclerViewData(repo.getManagerData());
-        fragment_worker.setRecyclerViewData(repo.getWorkerData());
-        fragment_site.setRecyclerViewData(repo.getSiteData());
-    }
 
     public Fragment_all getFragment_all() {
         return fragment_all;
@@ -56,100 +50,163 @@ public class Fragments {
     }
 
     public static class Fragment_all extends Fragment {
-        RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(getContext());
+        RecyclerViewAdapter recyclerViewAdapter;
+        private Fragment_allListener listener;
+
+        public interface Fragment_allListener{
+            void allSend(RecyclerViewAdapter adapter);
+        }
 
         @Nullable
         @Override
         public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
             View view = inflater.inflate(R.layout.fragment_all_contacts, container, false);
-
+            recyclerViewAdapter = new RecyclerViewAdapter(getContext());
+            listener.allSend(recyclerViewAdapter);
+            RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view_all);
+            recyclerView.setAdapter(recyclerViewAdapter);
+            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            recyclerViewAdapter.setContacts(DataRepository.userData);
             return view;
         }
 
         @Override
-        public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-            super.onViewCreated(view, savedInstanceState);
-
-            RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view_all);
-            recyclerView.setAdapter(recyclerViewAdapter);
-            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        public void onAttach(Context context) {
+            super.onAttach(context);
+            if (context instanceof Fragment_allListener){
+                listener = (Fragment_allListener) context;
+            }else{
+                throw new RuntimeException(context.toString()
+                + " must implement Listener");
+            }
         }
 
-        public void setRecyclerViewData(List<UserData> userData){
-            recyclerViewAdapter.setContacts(userData);
+        @Override
+        public void onDetach() {
+            super.onDetach();
+            listener = null;
         }
     }
 
     public static class Fragment_manager extends Fragment {
-        RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(getContext());
+        RecyclerViewAdapter recyclerViewAdapter;
+        private Fragment_managerListener listener;
+
+        public interface Fragment_managerListener{
+            void managerSend(RecyclerViewAdapter adapter);
+        }
+
         @Nullable
         @Override
         public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
             View view = inflater.inflate(R.layout.fragment_manager_contacts, container, false);
+            recyclerViewAdapter = new RecyclerViewAdapter(getContext());
+            listener.managerSend(recyclerViewAdapter);
+            RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view_manager);
+            recyclerView.setAdapter(recyclerViewAdapter);
+            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            recyclerViewAdapter.setContacts(DataRepository.managerData);
             return view;
         }
 
         @Override
-        public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-            super.onViewCreated(view, savedInstanceState);
-
-            RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view_manager);
-            recyclerView.setAdapter(recyclerViewAdapter);
-            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        public void onAttach(Context context) {
+            super.onAttach(context);
+            if (context instanceof Fragment_managerListener){
+                listener = (Fragment_managerListener) context;
+            }else{
+                throw new RuntimeException(context.toString()
+                        + " must implement Listener");
+            }
         }
 
-        public void setRecyclerViewData(List<UserData> managerData){
-            recyclerViewAdapter.setContacts(managerData);
+        @Override
+        public void onDetach() {
+            super.onDetach();
+            listener = null;
         }
+
     }
 
     public static class Fragment_worker extends Fragment {
-        RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(getContext());
+        RecyclerViewAdapter recyclerViewAdapter;
+        private Fragment_workerListener listener;
+
+        public interface Fragment_workerListener{
+            void workerSend(RecyclerViewAdapter adapter);
+        }
 
         @Nullable
         @Override
         public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
             View view = inflater.inflate(R.layout.fragment_worker_contacts, container, false);
-
+            recyclerViewAdapter = new RecyclerViewAdapter(getContext());
+            System.out.println("this is sent...");
+            listener.workerSend(recyclerViewAdapter);
+            RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view_worker);
+            recyclerView.setAdapter(recyclerViewAdapter);
+            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            recyclerViewAdapter.setContacts(DataRepository.workerData);
             return view;
         }
 
         @Override
-        public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-            super.onViewCreated(view, savedInstanceState);
-
-            RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view_worker);
-            recyclerView.setAdapter(recyclerViewAdapter);
-            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        public void onAttach(Context context) {
+            super.onAttach(context);
+            if (context instanceof Fragment_workerListener){
+                listener = (Fragment_workerListener) context;
+            }else{
+                throw new RuntimeException(context.toString()
+                        + " must implement Listener");
+            }
         }
 
-        public void setRecyclerViewData(List<UserData> workerData){
-            recyclerViewAdapter.setContacts(workerData);
+        @Override
+        public void onDetach() {
+            super.onDetach();
+            listener = null;
         }
 
     }
 
     public static class Fragment_site extends Fragment {
-        RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(getContext());
+        RecyclerViewAdapter recyclerViewAdapter;
+        private Fragment_siteListener listener;
+
+        public interface Fragment_siteListener{
+            void siteSend(RecyclerViewAdapter adapter);
+        }
+
         @Nullable
         @Override
         public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
             View view = inflater.inflate(R.layout.fragment_site_contacts, container, false);
+            recyclerViewAdapter = new RecyclerViewAdapter(getContext());
+            listener.siteSend(recyclerViewAdapter);
+            RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view_site);
+            recyclerView.setAdapter(recyclerViewAdapter);
+            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            recyclerViewAdapter.setContacts(DataRepository.siteData);
             return view;
         }
 
         @Override
-        public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-            super.onViewCreated(view, savedInstanceState);
-            RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view_site);
-            recyclerView.setAdapter(recyclerViewAdapter);
-            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
+        public void onAttach(Context context) {
+            super.onAttach(context);
+            if (context instanceof Fragment_siteListener){
+                listener = (Fragment_siteListener) context;
+            }else{
+                throw new RuntimeException(context.toString()
+                        + " must implement Listener");
+            }
         }
 
-        public void setRecyclerViewData(List<UserData> siteData){
-            recyclerViewAdapter.setContacts(siteData);
+        @Override
+        public void onDetach() {
+            super.onDetach();
+            listener = null;
         }
+
     }
 
 }

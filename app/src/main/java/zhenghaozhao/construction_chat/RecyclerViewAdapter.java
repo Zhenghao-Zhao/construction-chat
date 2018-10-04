@@ -26,7 +26,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter <RecyclerViewAdapt
         this.context = context;
     }
 
-
     public class ContactViewHolder extends RecyclerView.ViewHolder{
         public TextView userName;
         public View onSiteStatus;
