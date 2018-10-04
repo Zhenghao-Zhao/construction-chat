@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GroupData {
-    private String name;
+    private String groupName;
     private List<UserData> members;
 
+    public GroupData(){};
+
     GroupData(String grpName, List<UserData> allMembers){
-        name = grpName;
+        groupName = grpName;
         members = new ArrayList<>(allMembers);
     }
 
@@ -27,7 +29,7 @@ public class GroupData {
     }
 
     public String getGroupName() {
-        return name;
+        return groupName;
     }
 
 

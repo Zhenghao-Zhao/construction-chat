@@ -1,14 +1,21 @@
 package zhenghaozhao.construction_chat;
 
-import android.content.Context;
-import android.widget.ImageButton;
-import android.widget.ImageView;
+import java.util.List;
 
 public class UserData {
     private String name;
     private boolean isManager;
     private boolean isOnSite;
-    private int userAvatar; // assigned in HomeActivity class
+    private List<String> groupNames;
+    private int avatar; // assigned in HomeActivity class
+
+    // groupNames: contains at least one element - user's current site
+    public UserData(String name, boolean isManager, boolean isOnSite, List<String> groupNames){
+        this.name = name;
+        this.isManager = isManager;
+        this.isOnSite = isOnSite;
+        this.groupNames = groupNames;
+    }
 
     public UserData(String name, boolean isManager, boolean isOnSite){
         this.name = name;
@@ -16,6 +23,7 @@ public class UserData {
         this.isOnSite = isOnSite;
     }
 
+    // required by Firestore
     public UserData(){};
 
     public UserData(String name, int Manager, int OnSite){
@@ -36,6 +44,18 @@ public class UserData {
         return isOnSite;
     }
 
+    public List<String> getGroupNames() {
+        return groupNames;
+    }
+
+    public int getAvatar() {
+        return avatar;
+    }
+
+    public void setGroupNames(List<String> groupNames) {
+        this.groupNames = groupNames;
+    }
+
     public void setManager(boolean isManager){
         this.isManager = isManager;
     }
@@ -43,8 +63,6 @@ public class UserData {
     public void setOnSite(boolean isOnSite){
         this.isOnSite = isOnSite;
     }
-
-    public int getAvatar(){return userAvatar;}
 
     public int dbIsManager() {return isManager? 1 : 0;}
 

@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 public class DataRepository {
+    private static final String TAG = "DataRepository";
 
     //asynchronously retrieve all documents
     private FirebaseFirestore db;
@@ -38,28 +39,40 @@ public class DataRepository {
     }
 
     public void uploadUser(UserData userData){
-
-        db.collection("UserData_Test").add(userData);
+        userDataRef.add(userData);
     }
 
     // upload a group data to the database
     public void uploadGroupData(GroupData groupData){
-
         groupDataRef.add(groupData);
-
     }
 
-    // fetch all groups that contain the given user
-    // ****UNFINISHED****
-    public List<GroupData> fetchGroupData(String userName){
-        List<GroupData> groupData = new ArrayList<>();
-        groupDataRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-
-            }
-        });
-        return null;
+    // fetches all groups specified by the user
+    public List<GroupData> fetchGroupData(UserData userData){
+        List<String> groupNames = userData.getGroupNames();
+        final List<GroupData> groupData = new ArrayList<>();
+        for (String name : groupNames) {
+            groupDataRef.whereEqualTo("groupName", name)
+                    .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                @Override
+                public void onSuccess(QuerySnapshot querySnapshots) {
+                    System.out.println("Its successful...");
+                    for (QueryDocumentSnapshot documentSnapshot : querySnapshots) {
+                        GroupData data = documentSnapshot.toObject(GroupData.class);
+                        groupData.add(data);
+                    }
+                    for (GroupData data : groupData) {
+                        System.out.println("Group name: " + data.getGroupName());
+                    }
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.d(TAG, "onFailure: " + e.toString());
+                }
+            });
+        }
+        return groupData;
     }
 
     public void addRepoData(List<UserData> allData){
