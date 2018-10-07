@@ -6,13 +6,20 @@ import android.support.annotation.NonNull;
 
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
-public class FBViewModel extends ViewModel {
-    private static final CollectionReference userDataRef =
-            FirebaseFirestore.getInstance().collection("UserData_Test");
+public class viewModel extends ViewModel {
 
-    private final FirebaseQueryLiveData liveData = new FirebaseQueryLiveData(userDataRef);
+    private FirebaseQueryLiveData liveData;
+
+    viewModel(String collection){
+        Query ref = FirebaseFirestore.getInstance().collection(collection);
+        if (collection.equals("P2PData_Test")) {
+            ref = ref.orderBy("index");
+        }
+        liveData = new FirebaseQueryLiveData(ref);
+    }
 
 
     @NonNull

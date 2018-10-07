@@ -1,23 +1,15 @@
 package zhenghaozhao.construction_chat;
 
-import android.content.ContentValues;
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class Fragments {
     private Fragment_all fragment_all;
@@ -50,23 +42,24 @@ public class Fragments {
     }
 
     public static class Fragment_all extends Fragment {
-        RecyclerViewAdapter recyclerViewAdapter;
+        ContactAdapter contactAdapter;
         private Fragment_allListener listener;
 
         public interface Fragment_allListener{
-            void allSend(RecyclerViewAdapter adapter);
+            void allSend(ContactAdapter adapter);
         }
 
         @Nullable
         @Override
         public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
             View view = inflater.inflate(R.layout.fragment_all_contacts, container, false);
-            recyclerViewAdapter = new RecyclerViewAdapter(getContext());
-            listener.allSend(recyclerViewAdapter);
+            contactAdapter = new ContactAdapter(getContext());
+            System.out.println("allSend called ....");
+            listener.allSend(contactAdapter);
             RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view_all);
-            recyclerView.setAdapter(recyclerViewAdapter);
+            recyclerView.setAdapter(contactAdapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-            recyclerViewAdapter.setContacts(DataRepository.userData);
+            contactAdapter.setContacts(DataRepository.getUserData());
             return view;
         }
 
@@ -89,23 +82,23 @@ public class Fragments {
     }
 
     public static class Fragment_manager extends Fragment {
-        RecyclerViewAdapter recyclerViewAdapter;
+        ContactAdapter contactAdapter;
         private Fragment_managerListener listener;
 
         public interface Fragment_managerListener{
-            void managerSend(RecyclerViewAdapter adapter);
+            void managerSend(ContactAdapter adapter);
         }
 
         @Nullable
         @Override
         public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
             View view = inflater.inflate(R.layout.fragment_manager_contacts, container, false);
-            recyclerViewAdapter = new RecyclerViewAdapter(getContext());
-            listener.managerSend(recyclerViewAdapter);
+            contactAdapter = new ContactAdapter(getContext());
+            listener.managerSend(contactAdapter);
             RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view_manager);
-            recyclerView.setAdapter(recyclerViewAdapter);
+            recyclerView.setAdapter(contactAdapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-            recyclerViewAdapter.setContacts(DataRepository.managerData);
+            contactAdapter.setContacts(DataRepository.getManagerData());
             return view;
         }
 
@@ -129,23 +122,23 @@ public class Fragments {
     }
 
     public static class Fragment_worker extends Fragment {
-        RecyclerViewAdapter recyclerViewAdapter;
+        ContactAdapter contactAdapter;
         private Fragment_workerListener listener;
 
         public interface Fragment_workerListener{
-            void workerSend(RecyclerViewAdapter adapter);
+            void workerSend(ContactAdapter adapter);
         }
 
         @Nullable
         @Override
         public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
             View view = inflater.inflate(R.layout.fragment_worker_contacts, container, false);
-            recyclerViewAdapter = new RecyclerViewAdapter(getContext());
-            listener.workerSend(recyclerViewAdapter);
+            contactAdapter = new ContactAdapter(getContext());
+            listener.workerSend(contactAdapter);
             RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view_worker);
-            recyclerView.setAdapter(recyclerViewAdapter);
+            recyclerView.setAdapter(contactAdapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-            recyclerViewAdapter.setContacts(DataRepository.workerData);
+            contactAdapter.setContacts(DataRepository.getWorkerData());
             return view;
         }
 
@@ -169,23 +162,23 @@ public class Fragments {
     }
 
     public static class Fragment_site extends Fragment {
-        RecyclerViewAdapter recyclerViewAdapter;
+        ContactAdapter contactAdapter;
         private Fragment_siteListener listener;
 
         public interface Fragment_siteListener{
-            void siteSend(RecyclerViewAdapter adapter);
+            void siteSend(ContactAdapter adapter);
         }
 
         @Nullable
         @Override
         public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
             View view = inflater.inflate(R.layout.fragment_site_contacts, container, false);
-            recyclerViewAdapter = new RecyclerViewAdapter(getContext());
-            listener.siteSend(recyclerViewAdapter);
+            contactAdapter = new ContactAdapter(getContext());
+            listener.siteSend(contactAdapter);
             RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view_site);
-            recyclerView.setAdapter(recyclerViewAdapter);
+            recyclerView.setAdapter(contactAdapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-            recyclerViewAdapter.setContacts(DataRepository.siteData);
+            contactAdapter.setContacts(DataRepository.getSiteData());
             return view;
         }
 

@@ -2,9 +2,7 @@ package zhenghaozhao.construction_chat;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -17,12 +15,6 @@ import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.widget.AutoCompleteTextView;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -42,12 +34,11 @@ public class HomePage extends AppCompatActivity implements Fragments.Fragment_al
 
     //asynchronously retrieve all documents
     private AutoCompleteUserAdapter autoCompleteUserAdapter;
-    private DataRepository repository;
     private Fragments fragments;
-    private RecyclerViewAdapter allRecycler;
-    private RecyclerViewAdapter managerRecycler;
-    private RecyclerViewAdapter workerRecycler;
-    private RecyclerViewAdapter siteRecycler;
+    private ContactAdapter allRecycler;
+    private ContactAdapter managerRecycler;
+    private ContactAdapter workerRecycler;
+    private ContactAdapter siteRecycler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,29 +47,29 @@ public class HomePage extends AppCompatActivity implements Fragments.Fragment_al
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        repository = new DataRepository();
         fragments = new Fragments();
+        DataRepository dataRepository = new DataRepository();
 
-        FBViewModel viewModel = ViewModelProviders.of(this).get(FBViewModel.class);
+
+        viewModel viewModel = ViewModelProviders.of(this, new viewModelFactory("UserData_Test"))
+                .get(zhenghaozhao.construction_chat.viewModel.class);
 
         LiveData<QuerySnapshot> liveData = viewModel.getQuerySnapshotLiveData();
 
         liveData.observe(this, new Observer<QuerySnapshot>() {
             @Override
             public void onChanged(QuerySnapshot querySnapshot) {
-                List<UserData> cloudUserDataList = new ArrayList<>();
+                List<UserData> list = new ArrayList<>();
                 for (QueryDocumentSnapshot documentSnapshot : querySnapshot){
                     UserData data = documentSnapshot.toObject(UserData.class);
-                    cloudUserDataList.add(data);
+                    list.add(data);
                 }
-                repository.addRepoData(cloudUserDataList);
-                autoCompleteUserAdapter.setAll_userData(cloudUserDataList);
-                allRecycler.setContacts(repository.getUserData());
-                managerRecycler.setContacts(repository.getManagerData());
-                if (workerRecycler != null)
-                workerRecycler.setContacts(repository.getWorkerData());
-                if (siteRecycler != null)
-                siteRecycler.setContacts(repository.getSiteData());
+                DataRepository.addRepoData(list);
+                autoCompleteUserAdapter.setAll_userData(list);
+                if (allRecycler != null) allRecycler.setContacts(DataRepository.getUserData());
+                if (managerRecycler != null) managerRecycler.setContacts(DataRepository.getManagerData());
+                if (workerRecycler != null) workerRecycler.setContacts(DataRepository.getWorkerData());
+                if (siteRecycler != null) siteRecycler.setContacts(DataRepository.getSiteData());
             }
         });
 
@@ -108,22 +99,22 @@ public class HomePage extends AppCompatActivity implements Fragments.Fragment_al
     }
 
     @Override
-    public void allSend(RecyclerViewAdapter adapter) {
+    public void allSend(ContactAdapter adapter) {
         allRecycler = adapter;
     }
 
     @Override
-    public void managerSend(RecyclerViewAdapter adapter) {
+    public void managerSend(ContactAdapter adapter) {
         managerRecycler = adapter;
     }
 
     @Override
-    public void workerSend(RecyclerViewAdapter adapter) {
+    public void workerSend(ContactAdapter adapter) {
         workerRecycler = adapter;
     }
 
     @Override
-    public void siteSend(RecyclerViewAdapter adapter) {
+    public void siteSend(ContactAdapter adapter) {
         siteRecycler = adapter;
     }
 
@@ -131,11 +122,11 @@ public class HomePage extends AppCompatActivity implements Fragments.Fragment_al
         private final List<Fragment> fragmentList = new ArrayList<>();
         private final List<String> fragmentTitleList = new ArrayList<>();
 
-        public SectionsPagerAdapter(FragmentManager fm) {
+        private SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
         }
 
-        public void addFragment(Fragment fragment, String fragmentTitle){
+        private void addFragment(Fragment fragment, String fragmentTitle){
             fragmentList.add(fragment);
             fragmentTitleList.add(fragmentTitle);
         }

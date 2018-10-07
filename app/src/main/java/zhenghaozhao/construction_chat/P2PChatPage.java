@@ -1,5 +1,8 @@
 package zhenghaozhao.construction_chat;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -12,6 +15,12 @@ import android.widget.ListView;
 
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 
 public class P2PChatPage extends AppCompatActivity{
@@ -19,10 +28,8 @@ public class P2PChatPage extends AppCompatActivity{
     private EditText editText;
     private ListView messageView;
     private MessageAdapter messageAdapter;
-    private boolean isMyMessage;
-    private CollectionReference messageDataRef;
-    private FirebaseFirestore db;
     private static UserData receiverData;
+    private static UserData myData;
 
 
     @Override
@@ -37,14 +44,38 @@ public class P2PChatPage extends AppCompatActivity{
         messageView = (ListView) findViewById(R.id.messages_view);
         messageAdapter = new MessageAdapter(this);
         messageView.setAdapter(messageAdapter);
-        isMyMessage = false;
-        db = FirebaseFirestore.getInstance();
-        messageDataRef = db.collection("messageData_Test");
+        viewModel viewModel = ViewModelProviders.of(this, new viewModelFactory("P2PData_Test"))
+                .get(zhenghaozhao.construction_chat.viewModel.class);
+
+        LiveData<QuerySnapshot> liveData = viewModel.getQuerySnapshotLiveData();
+
+        liveData.observe(this, new Observer<QuerySnapshot>() {
+            @Override
+            public void onChanged(QuerySnapshot querySnapshot) {
+                List<Message> list = new ArrayList<>();
+                for (QueryDocumentSnapshot documentSnapshot : querySnapshot) {
+                    P2PChat data = documentSnapshot.toObject(P2PChat.class);
+                    if (data.getSender().getName().equals(myData.getName()) && data.getReceiver().getName().equals(receiverData.getName())) { //replace "Gregg" with current user name
+                        Message message = new Message(data.getMessage(), true, data.getReceiver());
+                        list.add(message);
+                    }
+                    else if (data.getReceiver().getName().equals(myData.getName()) && data.getSender().getName().equals(receiverData.getName())){
+                        Message message = new Message(data.getMessage(), false, data.getSender());
+                        list.add(message);
+                    }
+                }
+                messageAdapter.setMessages(list);
+            }
+        });
 
     }
 
-    public static void addReceiver(UserData newReceiver){
-        receiverData = newReceiver;
+    public static void addReceiver(UserData receiver){
+        receiverData = receiver;
+    }
+
+    public static void addSender(UserData sender){
+        myData = sender;
     }
 
     public void sendMessageClicked(View view) {
@@ -54,8 +85,9 @@ public class P2PChatPage extends AppCompatActivity{
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        final Message message = new Message(text, isMyMessage, receiverData);
-                        messageDataRef.add(message);
+                        final Message message = new Message(text, true, receiverData);
+                        P2PChat chat = new P2PChat(myData, receiverData, text, messageView.getCount()+1);
+                        DataRepository.uploadP2PChatData(chat);
                         messageAdapter.add(message);
                         // scroll the ListView to the last added element
                         messageView.setSelection(messageView.getCount() - 1);
@@ -65,29 +97,6 @@ public class P2PChatPage extends AppCompatActivity{
             }
         }
     }
-
-    @Override
-    public boolean dispatchKeyEvent(KeyEvent keyEvent) {
-        int code = keyEvent.getKeyCode();
-        int action = keyEvent.getAction();
-        switch (code){
-            case KeyEvent.KEYCODE_K:
-                if (action == KeyEvent.ACTION_DOWN){
-                    isMyMessage = !isMyMessage;
-                    return true;
-                }
-                break;
-            case KeyEvent.KEYCODE_B:
-                if (action == KeyEvent.ACTION_DOWN){
-                    Intent intent = new Intent(this, HomePage.class);
-                    this.startActivity(intent);
-
-                }
-                break;
-        }
-        return false;
-    }
-
 
     public void homeButtonClicked(View view) {
         Intent intent = new Intent(this, HomePage.class);

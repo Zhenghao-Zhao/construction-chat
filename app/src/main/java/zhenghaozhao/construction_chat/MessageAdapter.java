@@ -73,4 +73,9 @@ public class MessageAdapter extends BaseAdapter{
 
         return convertView;
     }
+
+    public void setMessages(List<Message> messages){
+        this.history = messages;
+        notifyDataSetChanged();
+    }
 }

@@ -22,33 +22,38 @@ public class DataRepository {
     private static final String TAG = "DataRepository";
 
     //asynchronously retrieve all documents
-    private FirebaseFirestore db;
-    private CollectionReference userDataRef;
-    private CollectionReference groupDataRef;
+    private static CollectionReference userDataRef;
+    private static CollectionReference groupDataRef;
+    private static CollectionReference P2PDataRef;
 
     //data lists
-    public static List<UserData> userData  = new ArrayList<>();
-    public static List<UserData> managerData = new ArrayList<>();
-    public static List<UserData> workerData = new ArrayList<>();
-    public static List<UserData> siteData = new ArrayList<>();
+    private static List<UserData> userData  = new ArrayList<>();
+    private static List<UserData> managerData = new ArrayList<>();
+    private static List<UserData> workerData = new ArrayList<>();
+    private static List<UserData> siteData = new ArrayList<>();
 
     DataRepository(){
-        db = FirebaseFirestore.getInstance();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
         userDataRef = db.collection("UserData_Test");
         groupDataRef = db.collection("GroupData_Test");
+        P2PDataRef = db.collection("P2PData_Test");
     }
 
-    public void uploadUser(UserData userData){
+    public static void uploadUser(UserData userData){
         userDataRef.add(userData);
     }
 
     // upload a group data to the database
-    public void uploadGroupData(GroupData groupData){
+    public static void uploadGroupData(GroupData groupData){
         groupDataRef.add(groupData);
     }
 
+    public static void uploadP2PChatData(P2PChat chat){
+        P2PDataRef.add(chat);
+    }
+
     // fetches all groups specified by the user
-    public List<GroupData> fetchGroupData(UserData userData){
+    public static List<GroupData> fetchGroupData(UserData userData){
         List<String> groupNames = userData.getGroupNames();
         final List<GroupData> groupData = new ArrayList<>();
         for (String name : groupNames) {
@@ -75,7 +80,7 @@ public class DataRepository {
         return groupData;
     }
 
-    public void addRepoData(List<UserData> allData){
+    public static void addRepoData(List<UserData> allData){
         userData = new ArrayList<>(allData);
         managerData = new ArrayList<>();
         workerData = new ArrayList<>();
@@ -90,19 +95,19 @@ public class DataRepository {
         }
     }
 
-    public List<UserData> getUserData() {
+    public static List<UserData> getUserData() {
         return userData;
     }
 
-    public List<UserData> getManagerData() {
+    public static List<UserData> getManagerData() {
         return managerData;
     }
 
-    public List<UserData> getWorkerData() {
+    public static List<UserData> getWorkerData() {
         return workerData;
     }
 
-    public List<UserData> getSiteData() {
+    public static List<UserData> getSiteData() {
         return siteData;
     }
 }
