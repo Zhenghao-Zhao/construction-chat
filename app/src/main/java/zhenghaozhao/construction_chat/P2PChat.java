@@ -1,5 +1,9 @@
 package zhenghaozhao.construction_chat;
 
+/*
+    A P2PChat contains a primary key from two users (one being sender, the other being receiver),
+    a message and index (used to maintain the order of messages)
+ */
 public class P2PChat {
     private String sender; //primary key
     private String receiver;

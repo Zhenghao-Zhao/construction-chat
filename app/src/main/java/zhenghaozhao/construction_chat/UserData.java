@@ -7,7 +7,7 @@ public class UserData {
     private boolean isManager;
     private boolean isOnSite;
     private List<String> groupNames;
-    private int avatar; // assigned in HomeActivity class
+    private int avatar; // customised user avatar for future uses
 
     // groupNames: contains at least one element - user's current site
     public UserData(String name, boolean isManager, boolean isOnSite, List<String> groupNames){

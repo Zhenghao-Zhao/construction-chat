@@ -6,6 +6,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 
+/*
+    Set up initial user data
+ */
+
 public class LogInActivity extends AppCompatActivity {
     private EditText name;
     private EditText manager;

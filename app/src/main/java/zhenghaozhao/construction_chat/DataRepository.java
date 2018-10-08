@@ -18,6 +18,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/*
+    Contains methods for interacting with FireStore (online database)
+ */
 public class DataRepository {
     private static final String TAG = "DataRepository";
 
@@ -80,6 +83,7 @@ public class DataRepository {
         return groupData;
     }
 
+    // this method sorts retrieved data into different categories
     public static void addRepoData(List<UserData> allData){
         userData = new ArrayList<>(allData);
         managerData = new ArrayList<>();

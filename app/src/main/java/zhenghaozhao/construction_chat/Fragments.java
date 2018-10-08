@@ -54,7 +54,6 @@ public class Fragments {
         public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
             View view = inflater.inflate(R.layout.fragment_all_contacts, container, false);
             contactAdapter = new ContactAdapter(getContext());
-            System.out.println("allSend called ....");
             listener.allSend(contactAdapter);
             RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view_all);
             recyclerView.setAdapter(contactAdapter);

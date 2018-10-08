@@ -9,24 +9,21 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Filter;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class AutoCompleteUserAdapter extends ArrayAdapter<UserData>{
     private List<UserData> all_userData;
-    private Context this_context;
+    private Context context;
 
     public AutoCompleteUserAdapter(@NonNull Context context, @NonNull List<UserData> dataList) {
         super(context, 0, dataList);
         all_userData = new ArrayList<>(dataList);
-        this_context = context;
+        this.context = context;
     }
 
     @NonNull
@@ -72,8 +69,8 @@ public class AutoCompleteUserAdapter extends ArrayAdapter<UserData>{
             @Override
             public void onClick(View view) {
                 P2PChatPage.addReceiver(data);
-                Intent intent = new Intent(this_context, P2PChatPage.class);
-                this_context.startActivity(intent);
+                Intent intent = new Intent(context, P2PChatPage.class);
+                context.startActivity(intent);
 
             }
         });

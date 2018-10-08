@@ -22,6 +22,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/*
+    Chatting page activity
+ */
 
 public class P2PChatPage extends AppCompatActivity{
 
