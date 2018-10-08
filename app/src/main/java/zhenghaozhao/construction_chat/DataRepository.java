@@ -1,9 +1,7 @@
 package zhenghaozhao.construction_chat;
 
-import android.arch.lifecycle.LiveData;
 import android.support.annotation.NonNull;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -15,9 +13,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /*
     Contains methods for interacting with FireStore (online database)
@@ -35,8 +31,6 @@ public class DataRepository {
     private static List<UserData> managerData = new ArrayList<>();
     private static List<UserData> workerData = new ArrayList<>();
     private static List<UserData> siteData = new ArrayList<>();
-
-    private UserData
 
     DataRepository(){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
