@@ -27,7 +27,7 @@
                 android:layout_alignParentBottom="true"
                 android:background="#0000"
                 android:padding="3dp"
-                app:srcCompat="@drawable/ic_home_black_24dp" />
+                app:srcCompat="@drawable/ic_home" />
 
             <AutoCompleteTextView
                 android:id="@+id/actv"
@@ -51,7 +51,7 @@
                 android:layout_toEndOf="@+id/actv"
                 android:layout_alignParentBottom="true"
                 android:background="#0000"
-                app:srcCompat="@drawable/ic_menu_black_24dp" />
+                app:srcCompat="@drawable/ic_menu" />
 
         </RelativeLayout>
 
