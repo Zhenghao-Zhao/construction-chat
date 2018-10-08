@@ -50,7 +50,6 @@ public class HomePage extends AppCompatActivity implements Fragments.Fragment_al
         fragments = new Fragments();
         DataRepository dataRepository = new DataRepository();
 
-
         viewModel viewModel = ViewModelProviders.of(this, new viewModelFactory("UserData_Test"))
                 .get(zhenghaozhao.construction_chat.viewModel.class);
 

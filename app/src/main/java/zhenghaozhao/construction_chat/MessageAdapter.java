@@ -17,9 +17,10 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MessageAdapter extends BaseAdapter{
     class MessageViewHolder {
-        public CircleImageView avatar;
-        public TextView userName;
-        public TextView messageBody;
+        private View avatar;
+        private TextView userLetter;
+        private TextView userName;
+        private TextView messageBody;
     }
 
     List<Message> history = new ArrayList<>();
@@ -55,6 +56,7 @@ public class MessageAdapter extends BaseAdapter{
         LayoutInflater messageInflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
         Message message = history.get(i);
 
+
         if (message.isMyMessage()) { // this message was sent by us so let's create a basic chat bubble on the right
             convertView = messageInflater.inflate(R.layout.my_message, null);
             holder.messageBody = (TextView) convertView.findViewById(R.id.message_body);
@@ -62,13 +64,23 @@ public class MessageAdapter extends BaseAdapter{
             holder.messageBody.setText(message.getText());
         } else { // this message was sent by someone else so let's create an advanced chat bubble on the left
             convertView = messageInflater.inflate(R.layout.their_message, null);
-            holder.avatar = (CircleImageView) convertView.findViewById(R.id.avatar);
-            holder.userName = (TextView) convertView.findViewById(R.id.userName);
             holder.messageBody = (TextView) convertView.findViewById(R.id.message_body);
+            holder.avatar = (View) convertView.findViewById(R.id.avatar);
+            holder.userName = (TextView) convertView.findViewById(R.id.userName);
+            holder.userLetter = (TextView) convertView.findViewById(R.id.userLetter);
             convertView.setTag(holder);
 
-            holder.userName.setText(message.getData().getName());
+            holder.userName.setText(message.getName());
             holder.messageBody.setText(message.getText());
+            if (message.isManager()){
+                holder.userLetter.setText("M");
+                GradientDrawable drawable = (GradientDrawable) holder.avatar.getBackground();
+                drawable.setColor(Color.GREEN);
+            }else{
+                holder.userLetter.setText("W");
+                GradientDrawable drawable = (GradientDrawable) holder.avatar.getBackground();
+                drawable.setColor(Color.RED);
+            }
         }
 
         return convertView;

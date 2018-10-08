@@ -3,6 +3,7 @@ package zhenghaozhao.construction_chat;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -43,7 +44,8 @@ public class AutoCompleteUserAdapter extends ArrayAdapter<UserData>{
             );
         }
         TextView textViewName = convertView.findViewById(R.id.userName);
-        ImageView imageView = convertView.findViewById(R.id.avatar);
+        TextView userLetter = convertView.findViewById(R.id.userLetter);
+        View avatar = convertView.findViewById(R.id.avatar);
         View view = convertView.findViewById(R.id.onSiteStatus);
 
         UserData data = getItem(position);
@@ -53,6 +55,15 @@ public class AutoCompleteUserAdapter extends ArrayAdapter<UserData>{
                 view.setBackgroundColor(Color.YELLOW);
             } else {
                 view.setBackgroundColor(Color.GRAY);
+            }
+            if (data.isManager()){
+                userLetter.setText("M");
+                GradientDrawable drawable = (GradientDrawable) avatar.getBackground();
+                drawable.setColor(Color.GREEN);
+            }else{
+                userLetter.setText("W");
+                GradientDrawable drawable = (GradientDrawable) avatar.getBackground();
+                drawable.setColor(Color.RED);
             }
         }
 

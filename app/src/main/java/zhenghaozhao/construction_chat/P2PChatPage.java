@@ -55,12 +55,12 @@ public class P2PChatPage extends AppCompatActivity{
                 List<Message> list = new ArrayList<>();
                 for (QueryDocumentSnapshot documentSnapshot : querySnapshot) {
                     P2PChat data = documentSnapshot.toObject(P2PChat.class);
-                    if (data.getSender().getName().equals(myData.getName()) && data.getReceiver().getName().equals(receiverData.getName())) { //replace "Gregg" with current user name
+                    if (data.getSender().equals(myData.getName()) && data.getReceiver().equals(receiverData.getName())) { //replace "Gregg" with current user name
                         Message message = new Message(data.getMessage(), true, data.getReceiver());
                         list.add(message);
                     }
-                    else if (data.getReceiver().getName().equals(myData.getName()) && data.getSender().getName().equals(receiverData.getName())){
-                        Message message = new Message(data.getMessage(), false, data.getSender());
+                    else if (data.getReceiver().equals(myData.getName()) && data.getSender().equals(receiverData.getName())){
+                        Message message = new Message(data.getMessage(), false, data.getSender(), receiverData.isManager());
                         list.add(message);
                     }
                 }
@@ -85,8 +85,8 @@ public class P2PChatPage extends AppCompatActivity{
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        final Message message = new Message(text, true, receiverData);
-                        P2PChat chat = new P2PChat(myData, receiverData, text, messageView.getCount()+1);
+                        final Message message = new Message(text, true, receiverData.getName());
+                        P2PChat chat = new P2PChat(myData.getName(), receiverData.getName(), text, messageView.getCount()+1);
                         DataRepository.uploadP2PChatData(chat);
                         messageAdapter.add(message);
                         // scroll the ListView to the last added element

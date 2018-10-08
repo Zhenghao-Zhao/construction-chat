@@ -64,7 +64,4 @@ public class UserData {
         this.isOnSite = isOnSite;
     }
 
-    public int dbIsManager() {return isManager? 1 : 0;}
-
-    public int dbIsOnSite() {return isOnSite? 1 : 0;}
 }

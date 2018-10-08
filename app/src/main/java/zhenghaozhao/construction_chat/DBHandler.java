@@ -82,8 +82,8 @@ public class DBHandler extends SQLiteOpenHelper {
     public void addUser(UserData userData){
         ContentValues values = new ContentValues();
         values.put(UserEntry.COLUMN_userName, userData.getName());
-        values.put(UserEntry.COLUMN_isManager, userData.dbIsManager());
-        values.put(UserEntry.COLUMN_isOnSite, userData.dbIsOnSite());
+//        values.put(UserEntry.COLUMN_isManager, userData.dbIsManager());
+//        values.put(UserEntry.COLUMN_isOnSite, userData.dbIsOnSite());
         SQLiteDatabase myDb = getWritableDatabase();
         myDb.insert(TABLE_NAME_U, null, values);
         myDb.close();
