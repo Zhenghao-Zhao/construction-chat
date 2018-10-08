@@ -9,6 +9,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -34,6 +35,8 @@ public class DataRepository {
     private static List<UserData> managerData = new ArrayList<>();
     private static List<UserData> workerData = new ArrayList<>();
     private static List<UserData> siteData = new ArrayList<>();
+
+    private UserData
 
     DataRepository(){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -81,6 +84,23 @@ public class DataRepository {
             });
         }
         return groupData;
+    }
+
+    //currently considering userName as a primary key
+    public static UserData fetchUserData(final String userName){
+        final List<UserData> dataList = new ArrayList<>();
+        DocumentReference docRef = userDataRef.document(userName);
+        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                if (documentSnapshot.exists()){
+                    UserData userData = documentSnapshot.toObject(UserData.class);
+                    dataList.add(userData);
+                    Log.d(TAG, "onSuccess: " + userData.getName());
+                }
+            }
+        });
+        return dataList.get(0);
     }
 
     // this method sorts retrieved data into different categories

@@ -18,4 +18,6 @@
     <string name="Site">Site</string>
     <string name="Search">Search</string>
     <string name="title_activity_home_navigation">HomeNavigationActivity</string>
+    <string name="title_activity_nav">NavActivity</string>
+    <string name="title_activity_main">MainActivity</string>
 </resources>

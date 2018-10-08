@@ -16,19 +16,15 @@
             android:name=".HomePage"
             android:label="@string/title_activity_home_page"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden">
-        </activity>
-        <activity
-            android:name=".HomeNavigationActivity"
-            android:label="@string/title_activity_home_navigation"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".LogInActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:windowSoftInputMode="stateHidden" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".LogInActivity"
+            android:theme="@style/AppTheme.NoActionBar">
         </activity>
     </application>
 

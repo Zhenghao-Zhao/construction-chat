@@ -5,6 +5,9 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -13,6 +16,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.widget.AutoCompleteTextView;
 
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -40,12 +44,24 @@ public class HomePage extends AppCompatActivity implements Fragments.Fragment_al
     private ContactAdapter workerRecycler;
     private ContactAdapter siteRecycler;
 
+    private DrawerLayout drawerLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home_page);
+        setContentView(R.layout.activity_nav_home);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        drawerLayout = findViewById(R.id.drawer_layout);
+
+        ActionBar actionbar = getSupportActionBar();
+        actionbar.setDisplayHomeAsUpEnabled(true);
+        actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
+
+
 
         fragments = new Fragments();
         DataRepository dataRepository = new DataRepository();
@@ -86,6 +102,23 @@ public class HomePage extends AppCompatActivity implements Fragments.Fragment_al
         autoCompleteUserAdapter = new AutoCompleteUserAdapter(this, new ArrayList<UserData>());
         editText.setAdapter(autoCompleteUserAdapter);
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                drawerLayout.openDrawer(GravityCompat.END);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (drawerLayout.isDrawerOpen(GravityCompat.END)){
+            drawerLayout.closeDrawer(GravityCompat.END);
+        }else super.onBackPressed();
     }
 
     private void setUpViewPager(ViewPager viewPager){
