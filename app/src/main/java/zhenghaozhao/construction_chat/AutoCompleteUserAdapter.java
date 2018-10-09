@@ -40,7 +40,7 @@ public class AutoCompleteUserAdapter extends ArrayAdapter<UserData>{
                     R.layout.list_search, parent, false
             );
         }
-        TextView textViewName = convertView.findViewById(R.id.userName);
+        TextView textViewName = convertView.findViewById(R.id.name);
         TextView userLetter = convertView.findViewById(R.id.userLetter);
         View avatar = convertView.findViewById(R.id.avatar);
         View view = convertView.findViewById(R.id.onSiteStatus);

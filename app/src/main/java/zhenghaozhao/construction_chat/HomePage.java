@@ -3,6 +3,7 @@ package zhenghaozhao.construction_chat;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
@@ -18,10 +19,16 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.AutoCompleteTextView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -49,6 +56,7 @@ public class HomePage extends AppCompatActivity implements Fragments.Fragment_al
     private RecyclerView nav_recycler;
     private NavAdapter adapter;
     private DrawerLayout drawerLayout;
+    private static final String TAG = "HomePage";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,23 +81,30 @@ public class HomePage extends AppCompatActivity implements Fragments.Fragment_al
         nav_recycler.setAdapter(adapter);
         nav_recycler.setLayoutManager(new LinearLayoutManager(this));
 
-        final List<P2PChat> container = new ArrayList<>();
-        DataRepository.P2PDataRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+        final List<UserData> container = new ArrayList<>();
+        final DocumentReference docRef = DataRepository.chatDataRef.document(DataRepository.getMyData().getName());
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                String name = DataRepository.getMyData().getName();
-                for (QueryDocumentSnapshot snapshot : queryDocumentSnapshots){
-                    if (snapshot.getData().get("receiver").equals(name) ||
-                            snapshot.getData().get("sender").equals(name)){
-                        P2PChat chatData = snapshot.toObject(P2PChat.class);
-                        container.add(chatData);
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        ChatRecord record = document.toObject(ChatRecord.class);
+                        DataRepository.setMyChatRecord(record);
+                        for (String name : record.getConversers()) {
+                            UserData user = DataRepository.fetchUserData(name);
+                            container.add(user);
+                        }
+                    } else {
+                        Log.d(TAG, "No such document");
                     }
+                    adapter.setChats(container);
+                } else {
+                    Log.d(TAG, "get failed with ", task.getException());
                 }
-                adapter.setChats(container);
-                Conversation p2PConversation = new Conversation(container);
-
             }
         });
+
 
         MyViewModel userViewModel = ViewModelProviders.of(this, new ViewModelFactory("UserData_Test"))
                 .get(MyViewModel.class);
@@ -174,6 +189,10 @@ public class HomePage extends AppCompatActivity implements Fragments.Fragment_al
     @Override
     public void siteSend(ContactAdapter adapter) {
         siteRecycler = adapter;
+    }
+
+    public void createGroupClicked(View view) {
+
     }
 
     public class SectionsPagerAdapter extends FragmentPagerAdapter {

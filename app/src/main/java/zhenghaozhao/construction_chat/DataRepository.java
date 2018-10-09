@@ -3,8 +3,10 @@ package zhenghaozhao.construction_chat;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -22,9 +24,10 @@ public class DataRepository {
     private static final String TAG = "DataRepository";
 
     //asynchronously retrieve all documents
-    private static CollectionReference userDataRef;
+    public static CollectionReference userDataRef;
     private static CollectionReference groupDataRef;
-    public static CollectionReference P2PDataRef;
+    private static CollectionReference P2PDataRef;
+    public static CollectionReference chatDataRef;
 
     //data lists
     private static List<UserData> userData  = new ArrayList<>();
@@ -32,13 +35,16 @@ public class DataRepository {
     private static List<UserData> workerData = new ArrayList<>();
     private static List<UserData> siteData = new ArrayList<>();
 
-    private static UserData myData = new UserData("Smoove", true, true);
+    private static UserData myData = new UserData("Smoove", false, false);
+    private static ChatRecord myChatRecord = new ChatRecord(myData.getName(), new ArrayList<String>());
 
     DataRepository(){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         userDataRef = db.collection("UserData_Test");
         groupDataRef = db.collection("GroupData_Test");
         P2PDataRef = db.collection("P2PData_Test");
+        chatDataRef = db.collection("ChatRecord_Test");
+
     }
 
     public static void uploadUser(UserData userData){
@@ -52,6 +58,10 @@ public class DataRepository {
 
     public static void uploadP2PChatData(P2PChat chat){
         P2PDataRef.add(chat);
+    }
+
+    public static void uploadRecord(final ChatRecord chatRecord){
+        chatDataRef.document(chatRecord.getName()).set(chatRecord);
     }
 
     // fetches all groups specified by the user
@@ -82,26 +92,30 @@ public class DataRepository {
         return groupData;
     }
 
-    //currently considering userName as a primary key
+    //currently considering name as a primary key
     public static UserData fetchUserData(final String userName){
-        final List<UserData> container = new ArrayList<>();
-        userDataRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+        final UserData[] rst = new UserData[1]; rst[0] = new UserData("Your_name", false, false);
+        final DocumentReference docRef = DataRepository.userDataRef.document(userName);
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                for (QueryDocumentSnapshot snapshot : queryDocumentSnapshots){
-                    if (snapshot.getData().get("name").equals(userName)){
-                        UserData userData = snapshot.toObject(UserData.class);
-                        container.add(userData);
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        rst[0] = document.toObject(UserData.class);
+                    } else {
+                        Log.d(TAG, "No such document");
                     }
+                } else {
+                    Log.d(TAG, "get failed with ", task.getException());
                 }
             }
         });
-        return container.size() > 0? container.get(0) : new UserData("Your_Name", false, false);
+        return rst[0];
     }
 
     public static List<P2PChat> fetchP2PData(final String name){
         final List<P2PChat> container = new ArrayList<>();
-        System.out.println("the name is : " + name);
         P2PDataRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
@@ -153,11 +167,20 @@ public class DataRepository {
         return siteData;
     }
 
+    public static ChatRecord getMyChatRecord() {
+        return myChatRecord;
+    }
+
     public static void setMyData(UserData myData) {
         DataRepository.myData = myData;
+    }
+
+    public static void setMyChatRecord(ChatRecord myChatRecord) {
+        DataRepository.myChatRecord = myChatRecord;
     }
 
     public static UserData getMyData() {
         return myData;
     }
+
 }

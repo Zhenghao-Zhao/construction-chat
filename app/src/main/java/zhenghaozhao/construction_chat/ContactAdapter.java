@@ -9,14 +9,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ContactAdapter extends RecyclerView.Adapter <ContactAdapter.ContactViewHolder> {
     private Context context;
@@ -35,7 +32,7 @@ public class ContactAdapter extends RecyclerView.Adapter <ContactAdapter.Contact
 
         public ContactViewHolder(View itemView) {
             super(itemView);
-            userName = (TextView) itemView.findViewById(R.id.userName);
+            userName = (TextView) itemView.findViewById(R.id.name);
             onSiteStatus = (View) itemView.findViewById(R.id.onSiteStatus);
             userAvatar = (View) itemView.findViewById(R.id.avatar);
             parent_layout = (RelativeLayout) itemView.findViewById(R.id.parent_layout);
@@ -77,7 +74,12 @@ public class ContactAdapter extends RecyclerView.Adapter <ContactAdapter.Contact
         holder.parent_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                UserData userData = contacts.get(holder.getAdapterPosition());
+                ChatRecord record = DataRepository.getMyChatRecord();
+                record.addConverser(userData.getName());
+                DataRepository.uploadRecord(record);
                 P2PChatPage.addReceiver(contacts.get(holder.getAdapterPosition()));
+
                 Intent intent = new Intent(context, P2PChatPage.class);
                 context.startActivity(intent);
             }

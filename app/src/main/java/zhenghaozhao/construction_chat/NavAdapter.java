@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class NavAdapter extends RecyclerView.Adapter <NavAdapter.ChatViewHolder> {
-    private List<P2PChat> chats = new ArrayList<>(); //a list that contains all chats by the current user
+    private List<UserData> record = new ArrayList<>();
     private Context context;
 
     NavAdapter(Context context){
@@ -32,7 +32,7 @@ public class NavAdapter extends RecyclerView.Adapter <NavAdapter.ChatViewHolder>
 
         public ChatViewHolder(View itemView) {
             super(itemView);
-            userName = (TextView) itemView.findViewById(R.id.userName);
+            userName = (TextView) itemView.findViewById(R.id.name);
             userLetter = (TextView) itemView.findViewById(R.id.userLetter);
             avatar = (View) itemView.findViewById(R.id.avatar);
             onSite = (View) itemView.findViewById(R.id.onSiteStatus);
@@ -48,14 +48,9 @@ public class NavAdapter extends RecyclerView.Adapter <NavAdapter.ChatViewHolder>
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final ChatViewHolder holder, int position) {
-        P2PChat chat = chats.get(position);
-        UserData thisUser = DataRepository.fetchUserData(chat.getReceiver());
-        if (chat.getSender().equals(DataRepository.getMyData().getName())) {
-            holder.userName.setText(chat.getReceiver());
-        }else {
-            holder.userName.setText(chat.getSender());
-        }
+    public void onBindViewHolder(@NonNull final ChatViewHolder holder, final int position) {
+        UserData thisUser = record.get(position);
+        holder.userName.setText(thisUser.getName());
         if (thisUser.isManager()){
             holder.userLetter.setText("M");
             GradientDrawable drawable = (GradientDrawable) holder.avatar.getBackground();
@@ -72,8 +67,7 @@ public class NavAdapter extends RecyclerView.Adapter <NavAdapter.ChatViewHolder>
         holder.parentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                P2PChat chat = chats.get(holder.getAdapterPosition());
-                UserData thisUser = DataRepository.fetchUserData(chat.getReceiver());
+                UserData thisUser = record.get(holder.getAdapterPosition());
                 P2PChatPage.addReceiver(thisUser);
                 Intent intent = new Intent(context, P2PChatPage.class);
                 context.startActivity(intent);
@@ -84,11 +78,11 @@ public class NavAdapter extends RecyclerView.Adapter <NavAdapter.ChatViewHolder>
 
     @Override
     public int getItemCount() {
-        return chats.size();
+        return record.size();
     }
 
-    public void setChats(List<P2PChat> chats) {
-        this.chats = chats;
+    public void setChats(List<UserData> chats) {
+        this.record = chats;
         notifyDataSetChanged();
     }
 }

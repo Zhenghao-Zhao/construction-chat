@@ -1,23 +1,28 @@
 package zhenghaozhao.construction_chat;
 
+import java.util.ArrayList;
 import java.util.List;
 
-// stores all conversations the user has.
+// stores all names;
 public class ChatRecord {
-    List<Conversation> conversations;
-    String userName;
+    List<String> conversers = new ArrayList<>();
+    String name;
 
-    ChatRecord(List<Conversation> conversations, String userName){
-        this.conversations = conversations;
-        this.userName = userName;
+    ChatRecord(String name, List<String> conversers){
+        this.conversers = conversers;
+        this.name = name;
     }
     ChatRecord(){}
 
-    public List<Conversation> getConversations() {
-        return conversations;
+    public List<String> getConversers() {
+        return conversers;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getName() {
+        return name;
+    }
+
+    public void addConverser(String name){
+        conversers.add(name);
     }
 }

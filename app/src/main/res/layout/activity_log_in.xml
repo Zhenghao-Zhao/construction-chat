@@ -8,9 +8,10 @@
     tools:context=".LogInActivity">
 
     <EditText
-        android:id="@+id/userName"
+        android:id="@+id/name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
         android:hint="Name"
         android:inputType="text" />
 
@@ -18,7 +19,7 @@
         android:id="@+id/isManager"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/userName"
+        android:layout_below="@+id/name"
         android:hint="Manager?"
         android:inputType="text" />
 
