@@ -76,7 +76,7 @@ public class ContactAdapter extends RecyclerView.Adapter <ContactAdapter.Contact
             public void onClick(View view) {
                 UserData userData = contacts.get(holder.getAdapterPosition());
                 ChatRecord record = DataRepository.getMyChatRecord();
-                record.addConverser(userData.getName());
+                if (!record.getConversers().contains(userData.getName())) record.addConverser(userData.getName());
                 DataRepository.uploadRecord(record);
                 P2PChatPage.addReceiver(contacts.get(holder.getAdapterPosition()));
 

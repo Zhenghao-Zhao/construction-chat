@@ -92,13 +92,28 @@ public class HomePage extends AppCompatActivity implements Fragments.Fragment_al
                         ChatRecord record = document.toObject(ChatRecord.class);
                         DataRepository.setMyChatRecord(record);
                         for (String name : record.getConversers()) {
-                            UserData user = DataRepository.fetchUserData(name);
-                            container.add(user);
+                            final DocumentReference docRef = DataRepository.userDataRef.document(name);
+                            docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        DocumentSnapshot document = task.getResult();
+                                        if (document.exists()) {
+                                            UserData data = document.toObject(UserData.class);
+                                            container.add(data);
+                                        } else {
+                                            Log.d(TAG, "No such document");
+                                        }
+                                    } else {
+                                        Log.d(TAG, "get failed with ", task.getException());
+                                    }
+                                    adapter.setChats(container);
+                                }
+                            });
                         }
                     } else {
                         Log.d(TAG, "No such document");
                     }
-                    adapter.setChats(container);
                 } else {
                     Log.d(TAG, "get failed with ", task.getException());
                 }
