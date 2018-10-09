@@ -35,7 +35,7 @@ public class DataRepository {
     private static List<UserData> workerData = new ArrayList<>();
     private static List<UserData> siteData = new ArrayList<>();
 
-    private static UserData myData = new UserData("Smoove", false, false);
+    private static UserData myData = new UserData("Your_name", false, false);
     private static ChatRecord myChatRecord = new ChatRecord(myData.getName(), new ArrayList<String>());
 
     DataRepository(){
