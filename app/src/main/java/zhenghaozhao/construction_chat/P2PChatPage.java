@@ -29,7 +29,6 @@ public class P2PChatPage extends AppCompatActivity{
     private static UserData receiverData;
     private static UserData myData;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,12 +37,14 @@ public class P2PChatPage extends AppCompatActivity{
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        myData = DataRepository.getMyData();
+
         editText = (EditText) findViewById(R.id.editText);
         messageView = (ListView) findViewById(R.id.messages_view);
         messageAdapter = new MessageAdapter(this);
         messageView.setAdapter(messageAdapter);
-        viewModel viewModel = ViewModelProviders.of(this, new viewModelFactory("P2PData_Test"))
-                .get(zhenghaozhao.construction_chat.viewModel.class);
+        MyViewModel viewModel = ViewModelProviders.of(this, new ViewModelFactory("P2PData_Test"))
+                .get(MyViewModel.class);
 
         LiveData<QuerySnapshot> liveData = viewModel.getQuerySnapshotLiveData();
 
@@ -70,10 +71,6 @@ public class P2PChatPage extends AppCompatActivity{
 
     public static void addReceiver(UserData receiver){
         receiverData = receiver;
-    }
-
-    public static void addSender(UserData sender){
-        myData = sender;
     }
 
     public void sendMessageClicked(View view) {

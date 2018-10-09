@@ -9,6 +9,8 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 
 import android.support.v4.app.Fragment;
@@ -19,6 +21,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.AutoCompleteTextView;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -43,7 +46,8 @@ public class HomePage extends AppCompatActivity implements Fragments.Fragment_al
     private ContactAdapter managerRecycler;
     private ContactAdapter workerRecycler;
     private ContactAdapter siteRecycler;
-
+    private RecyclerView nav_recycler;
+    private NavAdapter adapter;
     private DrawerLayout drawerLayout;
 
     @Override
@@ -61,17 +65,38 @@ public class HomePage extends AppCompatActivity implements Fragments.Fragment_al
         actionbar.setDisplayHomeAsUpEnabled(true);
         actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
 
-
-
-        fragments = new Fragments();
         DataRepository dataRepository = new DataRepository();
+        fragments = new Fragments();
 
-        viewModel viewModel = ViewModelProviders.of(this, new viewModelFactory("UserData_Test"))
-                .get(zhenghaozhao.construction_chat.viewModel.class);
+        nav_recycler = findViewById(R.id.recycler_view_nav);
+        adapter = new NavAdapter(this);
+        nav_recycler.setAdapter(adapter);
+        nav_recycler.setLayoutManager(new LinearLayoutManager(this));
 
-        LiveData<QuerySnapshot> liveData = viewModel.getQuerySnapshotLiveData();
+        final List<P2PChat> container = new ArrayList<>();
+        DataRepository.P2PDataRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                String name = DataRepository.getMyData().getName();
+                for (QueryDocumentSnapshot snapshot : queryDocumentSnapshots){
+                    if (snapshot.getData().get("receiver").equals(name) ||
+                            snapshot.getData().get("sender").equals(name)){
+                        P2PChat chatData = snapshot.toObject(P2PChat.class);
+                        container.add(chatData);
+                    }
+                }
+                adapter.setChats(container);
+                Conversation p2PConversation = new Conversation(container);
 
-        liveData.observe(this, new Observer<QuerySnapshot>() {
+            }
+        });
+
+        MyViewModel userViewModel = ViewModelProviders.of(this, new ViewModelFactory("UserData_Test"))
+                .get(MyViewModel.class);
+
+        LiveData<QuerySnapshot> userLiveData = userViewModel.getQuerySnapshotLiveData();
+
+        userLiveData.observe(this, new Observer<QuerySnapshot>() {
             @Override
             public void onChanged(QuerySnapshot querySnapshot) {
                 List<UserData> list = new ArrayList<>();
@@ -103,6 +128,7 @@ public class HomePage extends AppCompatActivity implements Fragments.Fragment_al
         editText.setAdapter(autoCompleteUserAdapter);
 
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

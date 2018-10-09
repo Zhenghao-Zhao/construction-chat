@@ -24,13 +24,15 @@ public class DataRepository {
     //asynchronously retrieve all documents
     private static CollectionReference userDataRef;
     private static CollectionReference groupDataRef;
-    private static CollectionReference P2PDataRef;
+    public static CollectionReference P2PDataRef;
 
     //data lists
     private static List<UserData> userData  = new ArrayList<>();
     private static List<UserData> managerData = new ArrayList<>();
     private static List<UserData> workerData = new ArrayList<>();
     private static List<UserData> siteData = new ArrayList<>();
+
+    private static UserData myData = new UserData("Smoove", true, true);
 
     DataRepository(){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -82,19 +84,41 @@ public class DataRepository {
 
     //currently considering userName as a primary key
     public static UserData fetchUserData(final String userName){
-        final List<UserData> dataList = new ArrayList<>();
-        DocumentReference docRef = userDataRef.document(userName);
-        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+        final List<UserData> container = new ArrayList<>();
+        userDataRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                if (documentSnapshot.exists()){
-                    UserData userData = documentSnapshot.toObject(UserData.class);
-                    dataList.add(userData);
-                    Log.d(TAG, "onSuccess: " + userData.getName());
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                for (QueryDocumentSnapshot snapshot : queryDocumentSnapshots){
+                    if (snapshot.getData().get("name").equals(userName)){
+                        UserData userData = snapshot.toObject(UserData.class);
+                        container.add(userData);
+                    }
                 }
             }
         });
-        return dataList.get(0);
+        return container.size() > 0? container.get(0) : new UserData("Your_Name", false, false);
+    }
+
+    public static List<P2PChat> fetchP2PData(final String name){
+        final List<P2PChat> container = new ArrayList<>();
+        System.out.println("the name is : " + name);
+        P2PDataRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                for (QueryDocumentSnapshot snapshot : queryDocumentSnapshots){
+                    if (snapshot.getData().get("receiver").equals(name) ||
+                            snapshot.getData().get("sender").equals(name)){
+                        P2PChat chatData = snapshot.toObject(P2PChat.class);
+                        System.out.println(chatData.getSender());
+                        container.add(chatData);
+                    }
+                }
+
+            }
+        });
+        System.out.println(container.size());
+
+        return container;
     }
 
     // this method sorts retrieved data into different categories
@@ -127,5 +151,13 @@ public class DataRepository {
 
     public static List<UserData> getSiteData() {
         return siteData;
+    }
+
+    public static void setMyData(UserData myData) {
+        DataRepository.myData = myData;
+    }
+
+    public static UserData getMyData() {
+        return myData;
     }
 }

@@ -28,7 +28,7 @@ public class LogInActivity extends AppCompatActivity {
         boolean isManager = manager.getText().toString().equals("true");
         boolean isOnSite = onSite.getText().toString().equals("true");
 
-        P2PChatPage.addSender(new UserData(name.getText().toString(), isManager, isOnSite));
+        DataRepository.setMyData(new UserData(name.getText().toString(), isManager, isOnSite));
         Intent intent = new Intent(this, HomePage.class);
         this.startActivity(intent);
     }
