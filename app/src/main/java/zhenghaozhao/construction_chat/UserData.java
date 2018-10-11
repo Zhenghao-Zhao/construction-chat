@@ -26,11 +26,6 @@ public class UserData {
     // required by Firestore
     public UserData(){};
 
-    public UserData(String name, int Manager, int OnSite){
-        this.name = name;
-        this.isManager = (Manager == 1);
-        this.isOnSite = (OnSite == 1);
-    }
 
     public String getName() {
         return name;

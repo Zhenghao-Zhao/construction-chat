@@ -15,27 +15,11 @@
         android:hint="Name"
         android:inputType="text" />
 
-    <EditText
-        android:id="@+id/isManager"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/name"
-        android:hint="Manager?"
-        android:inputType="text" />
-
-    <EditText
-        android:id="@+id/isOnSite"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/isManager"
-        android:hint="On site?"
-        android:inputType="text" />
-
     <Button
         android:id="@+id/button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/isOnSite"
+        android:layout_below="@+id/name"
         android:layout_centerInParent="true"
         android:onClick="logInClicked"
         android:text="Log in" />
