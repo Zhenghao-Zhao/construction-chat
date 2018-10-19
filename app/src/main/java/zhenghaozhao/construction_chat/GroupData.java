@@ -6,11 +6,11 @@ import java.util.List;
 public class GroupData {
     private String groupName;
     private List<UserData> members;
-    private UserData host;
 
-    GroupData(String grpName, UserData grpHost, List<UserData> allMembers){
+    public GroupData(){};
+
+    GroupData(String grpName, List<UserData> allMembers){
         groupName = grpName;
-        host = grpHost;
         members = new ArrayList<>(allMembers);
     }
 
@@ -32,8 +32,7 @@ public class GroupData {
         return groupName;
     }
 
-    public UserData getHost() {
-        return host;
-    }
+
+
 
 }

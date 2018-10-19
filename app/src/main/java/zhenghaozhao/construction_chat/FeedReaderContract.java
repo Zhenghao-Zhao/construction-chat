@@ -9,7 +9,7 @@ public class FeedReaderContract {
     public static class UserEntry implements BaseColumns {
         public static final String TABLE_NAME_U = "userProfile";
         public static final String _ID ="_id";
-        public static final String COLUMN_userName = "userName";
+        public static final String COLUMN_userName = "name";
         public static final String COLUMN_isOnSite = "isOnSite";
         public static final String COLUMN_isManager = "isManager";
     }
@@ -24,7 +24,7 @@ public class FeedReaderContract {
         public static final String TABLE_NAME_M = "membershipProfile";
         public static final String _ID = "_id";
         public static final String COLUMN_groupName = "groupName";
-        public static final String COLUMN_userName = "userName";
+        public static final String COLUMN_userName = "name";
     }
 
     public static class SiteEntry implements BaseColumns{
