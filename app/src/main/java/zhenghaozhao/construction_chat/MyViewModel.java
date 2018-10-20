@@ -21,12 +21,8 @@ public class MyViewModel extends android.arch.lifecycle.ViewModel {
         liveData = new FirebaseQueryLiveData(ref);
     }
 
-
     @NonNull
     public LiveData<QuerySnapshot> getQuerySnapshotLiveData() {
         return liveData;
     }
-
-
-
 }
