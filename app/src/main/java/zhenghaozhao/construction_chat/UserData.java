@@ -1,26 +1,27 @@
 package zhenghaozhao.construction_chat;
 
-import java.util.List;
+import java.util.UUID;
 
 public class UserData {
     private String name;
     private boolean isManager;
     private boolean isOnSite;
-    private List<String> groupNames;
-    private int avatar; // customised user avatar for future uses
+    private String ID;
+
 
     // groupNames: contains at least one element - user's current site
-    public UserData(String name, boolean isManager, boolean isOnSite, List<String> groupNames){
+    public UserData(String name, boolean isManager, boolean isOnSite, String id){
         this.name = name;
         this.isManager = isManager;
         this.isOnSite = isOnSite;
-        this.groupNames = groupNames;
+        this.ID = id;
     }
 
     public UserData(String name, boolean isManager, boolean isOnSite){
         this.name = name;
         this.isManager = isManager;
         this.isOnSite = isOnSite;
+        ID = UUID.randomUUID().toString();
     }
 
     // required by Firestore
@@ -31,24 +32,16 @@ public class UserData {
         return name;
     }
 
+    public String getID() {
+        return ID;
+    }
+
     public boolean isManager() {
         return isManager;
     }
 
     public boolean isOnSite(){
         return isOnSite;
-    }
-
-    public List<String> getGroupNames() {
-        return groupNames;
-    }
-
-    public int getAvatar() {
-        return avatar;
-    }
-
-    public void setGroupNames(List<String> groupNames) {
-        this.groupNames = groupNames;
     }
 
     public void setManager(boolean isManager){

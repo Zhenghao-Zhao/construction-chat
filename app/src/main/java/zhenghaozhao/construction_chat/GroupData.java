@@ -12,6 +12,7 @@ public class GroupData {
     GroupData(String grpName, List<UserData> allMembers){
         groupName = grpName;
         members = new ArrayList<>(allMembers);
+
     }
 
     public void add(List<UserData> newMembers){

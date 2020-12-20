@@ -89,5 +89,6 @@ public class MessageAdapter extends BaseAdapter{
     public void setMessages(List<Message> messages){
         this.history = messages;
         notifyDataSetChanged();
+        
     }
 }

@@ -1,10 +1,9 @@
 package zhenghaozhao.construction_chat;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.util.Log;
 
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
@@ -28,6 +27,7 @@ public class DataRepository {
     private static CollectionReference groupDataRef;
     private static CollectionReference P2PDataRef;
     public static CollectionReference chatDataRef;
+    public static CollectionReference credDataRef;
 
     //data lists
     private static List<UserData> userData  = new ArrayList<>();
@@ -35,8 +35,8 @@ public class DataRepository {
     private static List<UserData> workerData = new ArrayList<>();
     private static List<UserData> siteData = new ArrayList<>();
 
-    private static UserData myData = new UserData("Yuefang", false, false);
-    private static ChatRecord myChatRecord = new ChatRecord(myData.getName(), new ArrayList<String>());
+    private static UserData myData = fetchUserData("Yuefang");
+    private static ChatRecord myChatRecord = new ChatRecord(myData.getID(), new ArrayList<String>());
 
     DataRepository(){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -44,11 +44,12 @@ public class DataRepository {
         groupDataRef = db.collection("GroupData_Test");
         P2PDataRef = db.collection("P2PData_Test");
         chatDataRef = db.collection("ChatRecord_Test");
+        credDataRef = db.collection("Credential_Test");
 
     }
 
     public static void uploadUser(UserData userData){
-        userDataRef.add(userData);
+        userDataRef.document(userData.getID()).set(userData);
     }
 
     // upload a group data to the database
@@ -61,35 +62,7 @@ public class DataRepository {
     }
 
     public static void uploadRecord(final ChatRecord chatRecord){
-        chatDataRef.document(chatRecord.getName()).set(chatRecord);
-    }
-
-    // fetches all groups specified by the user
-    public static List<GroupData> fetchGroupData(UserData userData){
-        List<String> groupNames = userData.getGroupNames();
-        final List<GroupData> groupData = new ArrayList<>();
-        for (String name : groupNames) {
-            groupDataRef.whereEqualTo("groupName", name)
-                    .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                @Override
-                public void onSuccess(QuerySnapshot querySnapshots) {
-                    System.out.println("Its successful...");
-                    for (QueryDocumentSnapshot documentSnapshot : querySnapshots) {
-                        GroupData data = documentSnapshot.toObject(GroupData.class);
-                        groupData.add(data);
-                    }
-                    for (GroupData data : groupData) {
-                        System.out.println("Group name: " + data.getGroupName());
-                    }
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Log.d(TAG, "onFailure: " + e.toString());
-                }
-            });
-        }
-        return groupData;
+        chatDataRef.document(chatRecord.getId()).set(chatRecord);
     }
 
     //currently considering name as a primary key
@@ -120,18 +93,16 @@ public class DataRepository {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 for (QueryDocumentSnapshot snapshot : queryDocumentSnapshots){
-                    if (snapshot.getData().get("receiver").equals(name) ||
-                            snapshot.getData().get("sender").equals(name)){
+                    if (snapshot.getData().get("receiverId").equals(name) ||
+                            snapshot.getData().get("senderId").equals(name)){
                         P2PChat chatData = snapshot.toObject(P2PChat.class);
-                        System.out.println(chatData.getSender());
+                        System.out.println(chatData.getSenderId());
                         container.add(chatData);
                     }
                 }
 
             }
         });
-        System.out.println(container.size());
-
         return container;
     }
 

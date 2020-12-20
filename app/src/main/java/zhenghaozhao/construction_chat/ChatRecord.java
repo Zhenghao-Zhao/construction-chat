@@ -5,12 +5,12 @@ import java.util.List;
 
 // stores all names;
 public class ChatRecord {
-    List<String> conversers = new ArrayList<>();
-    String name;
+    private List<String> conversers = new ArrayList<>();
+    String id;
 
-    ChatRecord(String name, List<String> conversers){
+    ChatRecord(String id, List<String> conversers){
         this.conversers = conversers;
-        this.name = name;
+        this.id = id;
     }
     ChatRecord(){}
 
@@ -18,11 +18,11 @@ public class ChatRecord {
         return conversers;
     }
 
-    public String getName() {
-        return name;
+    public String getId() {
+        return id;
     }
 
-    public void addConverser(String name){
-        conversers.add(name);
+    public void addConverser(String id){
+        conversers.add(id);
     }
 }

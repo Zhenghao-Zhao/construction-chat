@@ -1,12 +1,12 @@
 package zhenghaozhao.construction_chat;
 
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProviders;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -41,13 +41,13 @@ public class P2PChatPage extends AppCompatActivity{
         TextView textView = (TextView) findViewById(R.id.receiver);
         textView.setText(receiverData.getName());
 
-
         myData = DataRepository.getMyData();
 
         editText = (EditText) findViewById(R.id.editText);
         messageView = (ListView) findViewById(R.id.messages_view);
         messageAdapter = new MessageAdapter(this);
         messageView.setAdapter(messageAdapter);
+
         MyViewModel viewModel = ViewModelProviders.of(this, new ViewModelFactory("P2PData_Test"))
                 .get(MyViewModel.class);
 
@@ -59,16 +59,18 @@ public class P2PChatPage extends AppCompatActivity{
                 List<Message> list = new ArrayList<>();
                 for (QueryDocumentSnapshot documentSnapshot : querySnapshot) {
                     P2PChat data = documentSnapshot.toObject(P2PChat.class);
-                    if (data.getSender().equals(myData.getName()) && data.getReceiver().equals(receiverData.getName())) { //replace "Gregg" with current user name
-                        Message message = new Message(data.getMessage(), true, data.getReceiver());
+                    if (data.getSenderId().equals(myData.getID()) && data.getReceiverId().equals(receiverData.getID())) { //replace "Gregg" with current user name
+                        Message message = new Message(data.getMessage(), true, data.getReceiverId());
                         list.add(message);
                     }
-                    else if (data.getReceiver().equals(myData.getName()) && data.getSender().equals(receiverData.getName())){
-                        Message message = new Message(data.getMessage(), false, data.getSender(), receiverData.isManager());
+                    else if (data.getReceiverId().equals(myData.getID()) && data.getSenderId().equals(receiverData.getID())){
+                        Message message = new Message(data.getMessage(), false, data.getSenderId(), receiverData.isManager());
                         list.add(message);
                     }
                 }
                 messageAdapter.setMessages(list);
+                messageView.smoothScrollToPosition(list.size()-1);
+
             }
         });
 
@@ -86,7 +88,7 @@ public class P2PChatPage extends AppCompatActivity{
                     @Override
                     public void run() {
                         final Message message = new Message(text, true, receiverData.getName());
-                        P2PChat chat = new P2PChat(myData.getName(), receiverData.getName(), text, messageView.getCount()+1);
+                        P2PChat chat = new P2PChat(myData.getID(), receiverData.getID(), text, messageView.getCount()+1);
                         DataRepository.uploadP2PChatData(chat);
                         messageAdapter.add(message);
                         // scroll the ListView to the last added element

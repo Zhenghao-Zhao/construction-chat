@@ -1,30 +1,30 @@
 package zhenghaozhao.construction_chat;
 
 /*
-    A P2PChat contains a primary key from two users (one being sender, the other being receiver),
+    A P2PChat contains a primary key from two users (one being senderId, the other being receiverId),
     a message and index (used to maintain the order of messages)
  */
 public class P2PChat {
-    private String sender; //primary key
-    private String receiver;
+    private String senderId; //primary key
+    private String receiverId;
     private String message;
     private int index;
 
     P2PChat(){}
 
-    P2PChat(String sender, String receiver, String message, int index){
-        this.sender = sender;
-        this.receiver = receiver;
+    P2PChat(String senderId, String receiverId, String message, int index){
+        this.senderId = senderId;
+        this.receiverId = receiverId;
         this.message = message;
         this.index = index;
     }
 
-    public String getSender() {
-        return sender;
+    public String getSenderId() {
+        return senderId;
     }
 
-    public String getReceiver() {
-        return receiver;
+    public String getReceiverId() {
+        return receiverId;
     }
 
     public String getMessage() {

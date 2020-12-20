@@ -4,8 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -75,9 +75,9 @@ public class ContactAdapter extends RecyclerView.Adapter <ContactAdapter.Contact
             @Override
             public void onClick(View view) {
                 UserData userData = contacts.get(holder.getAdapterPosition());
-                ChatRecord record = DataRepository.getMyChatRecord();
-                if (!record.getConversers().contains(userData.getName())) record.addConverser(userData.getName());
-                DataRepository.uploadRecord(record);
+                ChatRecord mRecord = DataRepository.getMyChatRecord();
+                if (!mRecord.getConversers().contains(userData.getID())) mRecord.addConverser(userData.getID());
+                DataRepository.uploadRecord(mRecord);
                 P2PChatPage.addReceiver(contacts.get(holder.getAdapterPosition()));
 
                 Intent intent = new Intent(context, P2PChatPage.class);
@@ -85,7 +85,6 @@ public class ContactAdapter extends RecyclerView.Adapter <ContactAdapter.Contact
             }
         });
     }
-
 
     @Override
     public int getItemCount() {

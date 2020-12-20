@@ -1,23 +1,23 @@
 package zhenghaozhao.construction_chat;
 
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProviders;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import com.google.android.material.tabs.TabLayout;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.Toolbar;
 
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -25,7 +25,6 @@ import android.view.View;
 import android.widget.AutoCompleteTextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -74,6 +73,7 @@ public class HomePage extends AppCompatActivity implements Fragments.Fragment_al
         actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
 
         DataRepository dataRepository = new DataRepository();
+
         fragments = new Fragments();
 
         nav_recycler = findViewById(R.id.recycler_view_nav);
@@ -82,23 +82,25 @@ public class HomePage extends AppCompatActivity implements Fragments.Fragment_al
         nav_recycler.setLayoutManager(new LinearLayoutManager(this));
 
         final List<UserData> container = new ArrayList<>();
-        final DocumentReference docRef = DataRepository.chatDataRef.document(DataRepository.getMyData().getName());
+        final DocumentReference docRef = DataRepository.chatDataRef.document(DataRepository.getMyData().getID());
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
+                    assert document != null;
                     if (document.exists()) {
                         ChatRecord record = document.toObject(ChatRecord.class);
                         DataRepository.setMyChatRecord(record);
-                        for (String name : record.getConversers()) {
-
-                            final DocumentReference docRef = DataRepository.userDataRef.document(name);
+                        assert record != null;
+                        for (String id : record.getConversers()) {
+                            final DocumentReference docRef = DataRepository.userDataRef.document(id);
                             docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                 @Override
                                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                                     if (task.isSuccessful()) {
                                         DocumentSnapshot document = task.getResult();
+                                        assert document != null;
                                         if (document.exists()) {
                                             UserData data = document.toObject(UserData.class);
                                             container.add(data);
